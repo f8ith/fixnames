@@ -6,7 +6,7 @@ VID_FORMATS = (".mkv", ".mp4")
 SUB_FORMATS = (".ass", ".srt")
 
 def log(string):
-    with open("fixnames.log") as file:
+    with open("fixnames.log", "a") as file:
         print(string)
         file.write(f"{string}\n")
 
