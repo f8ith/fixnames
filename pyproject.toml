@@ -9,8 +9,11 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 parse-torrent-title = "^2.8.1"
-
+black = "^24.4.2"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+fixnames = "fixnames:main"

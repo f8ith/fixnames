@@ -1,18 +1,27 @@
 import PTN
 import sys
 import os
+import argparse
 
 VID_FORMATS = (".mkv", ".mp4")
-SUB_FORMATS = (".ass", ".srt")
+SUB_FORMATS = (".ass", ".srt", ".pgs")
+
 
 def log(string):
     with open("fixnames.log", "a") as file:
         print(string)
         file.write(f"{string}\n")
 
-def main():
 
-    full_path = sys.argv[1]
+def main():
+    parser = argparse.ArgumentParser(
+        prog="fixnames", description="Fix filenames for common media types"
+    )
+    parser.add_argument("directory")
+    parser.add_argument("-r", "--recursive")
+    args = parser.parse_args()
+
+    full_path = args.directory
     directory = os.fsencode(full_path)
     series_name = full_path.split("\\")[-2]
     season_number = full_path.split("\\")[-1].partition(" ")[2]
@@ -25,7 +34,7 @@ def main():
 
     os.chdir(directory)
     if os.path.exists("fixnames.log"):
-        if input("fixnames.log exists. Continue? [y/n] ") != 'y':
+        if input("fixnames.log exists. Continue? [y/n] ") != "y":
             sys.exit(0)
 
     for file in os.listdir(directory):
@@ -37,7 +46,7 @@ def main():
 
     assert len(vid_files) == len(sub_files), "Number of videos & subs do not match!"
 
-    if input("Rename videos? [y/n] ") == 'y':
+    if input("Rename videos? [y/n] ") == "y":
         for vid_file in vid_files:
             parsed = PTN.parse(vid_file)
             new_vid_file = f"{series_name} - S{season_number}E{str(parsed["episode"]).zfill(2)}.{vid_file.partition(".")[2]}"
@@ -50,7 +59,7 @@ def main():
     new_vid_files.sort()
     sub_files.sort()
 
-    if input("Rename subs? [y/n] ") == 'y':
+    if input("Rename subs? [y/n] ") == "y":
         for index, vid_file in enumerate(new_vid_files):
             sub_file = sub_files[index]
             new_sub_file = f"{vid_file.partition(".")[0]}.{sub_file.partition(".")[2]}"
@@ -59,5 +68,5 @@ def main():
             os.rename(sub_file, new_sub_file)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
